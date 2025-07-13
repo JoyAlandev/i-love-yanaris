@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>I love Yanaris Troudart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Una página especial dedicada con amor a Yanaris Troudart.">
+  <meta name="keywords" content="I love Yanaris, Yanaris Troudart, amor, página romántica, especial">
+  <meta name="author" content="Joy Trejos">
+  <meta name="robots" content="index, follow">
+
+  <!-- Redes sociales -->
+  <meta property="og:title" content="I love Yanaris Troudart">
+  <meta property="og:description" content="Una experiencia web dedicada a Yanaris.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="preview.jpg">
+  <meta property="og:url" content="https://joyalandev.github.io/i-love-yanaris/">
+
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      font-family: sans-serif;
+      background: black;
+    }
+
+    #ui {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    #pregunta-container, #pregunta-final {
+      background: rgba(0,0,0,0.7);
+      padding: 15px;
+      border-radius: 8px;
+      pointer-events: auto;
+      margin-bottom: 10px;
+      max-width: 90%;
+      text-align: center;
+      color: white;
+    }
+
+    button {
+      padding: 10px 16px;
+      font-size: 16px;
+      margin: 8px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background: #ff69b4;
+      color: white;
+      pointer-events: auto;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #ff1493;
+    }
+
+    .oculto { display: none; }
+
+    .particle {
+      position: absolute;
+      font-size: 24px;
+      animation: floatUp 4s linear infinite;
+      opacity: 0.8;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-300px); opacity: 0; }
+    }
+
+    #texto-maquina {
+      position: absolute;
+      top: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 22px;
+      font-family: 'Courier New', monospace;
+      color: #ff69b4;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid #ffc0cb;
+      animation: typing 4s steps(40, end), blink .7s step-end infinite;
+      z-index: 15;
+      pointer-events: none;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    @keyframes blink {
+      from, to { border-color: transparent }
+      50% { border-color: #ffc0cb }
+    }
+
+    #boton-inicio {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ff69b4;
+      color: white;
+      font-size: 20px;
+      padding: 14px 24px;
+      border-radius: 10px;
+      z-index: 100;
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Música -->
+  <audio id="musica-fondo" src="musica.mp3" loop preload="auto"></audio>
+
+  <!-- Texto animado -->
+  <div id="texto-maquina">El mejor día de mi vida fue este</div>
+
+  <!-- Botón para iniciar experiencia -->
+  <button id="boton-inicio" onclick="iniciarExperiencia()">💖 Comenzar</button>
+
+  <!-- Video -->
+  <video id="video1" src="video1.mp4" loop muted playsinline webkit-playsinline crossorigin="anonymous"></video>
+
+  <!-- Escena A-Frame -->
+  <a-scene>
+    <a-sky src="fondo360.jpg" rotation="0 -90 0"></a-sky>
+
+    <a-video id="etapa1-video" src="#video1" position="0 1.6 -3.3" width="2" height="2" visible="true"></a-video>
+
+    <a-entity id="galeria" visible="false">
+      <a-image src="foto1.jpg" position="-1.5 1.6 -2"></a-image>
+      <a-image src="foto2.jpg" position="0 1.6 -2"></a-image>
+      <a-image src="foto3.jpg" position="1.5 1.6 -2"></a-image>
+    </a-entity>
+
+    <a-image id="final-img" src="imagen-final.jpg" position="0 1.6 -2" width="1.5" height="1.5" visible="false"></a-image>
+
+    <a-entity cursor="fuse: true; fuseTimeout: 500"
+              position="0 0 -1"
+              geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+              material="color: white; shader: flat">
+    </a-entity>
+  </a-scene>
+
+  <div id="ui">
+    <div id="pregunta-container" class="oculto">
+      <p id="texto-pregunta">¿Cuál es la pregunta?</p>
+      <button id="btn1" onclick="verificar(this)"></button>
+      <button id="btn2" onclick="verificar(this)"></button>
+      <button id="btn3" onclick="verificar(this)"></button>
+    </div>
+
+    <div id="pregunta-final" class="oculto">
+      <p>¿Aún seguís enoja conmigo? :(</p>
+      <button onclick="responderFinal('no ya se me pasó')">No, ya se me pasó</button>
+      <button onclick="responderFinal('sí, vppcdtm')">Sí, vppcdtm</button>
+    </div>
+
+    <button id="btn-siguiente" onclick="mostrarPregunta()">Siguiente</button>
+  </div>
+
+  <script>
+    let etapa = 1;
+
+    const preguntas = {
+      1: {
+        texto: "¿Cuando fue nuestro primer betito?",
+        opciones: ["24 diciembre 2022", "31 diciembre 2023", "24 diciembre 2023"],
+        correcta: "24 diciembre 2023"
+      },
+      2: {
+        texto: "¿Cuál es mi color favorito?",
+        opciones: ["azul", "verde", "negro"],
+        correcta: null 
+      }
+    };
+
+    function iniciarExperiencia() {
+      document.getElementById("video1").play();
+      document.getElementById("boton-inicio").style.display = "none";
+
+      const musica = document.getElementById("musica-fondo");
+      musica.volume = 0.4;
+      musica.play().catch(err => console.log("No se pudo reproducir la música:", err));
+    }
+
+    function mostrarPregunta() {
+      document.getElementById("btn-siguiente").classList.add("oculto");
+      document.getElementById("pregunta-container").classList.remove("oculto");
+
+      const pregunta = preguntas[etapa];
+      if (pregunta) {
+        document.getElementById("texto-pregunta").textContent = pregunta.texto;
+        document.getElementById("btn1").textContent = pregunta.opciones[0];
+        document.getElementById("btn2").textContent = pregunta.opciones[1];
+        document.getElementById("btn3").textContent = pregunta.opciones[2];
+      }
+    }
+
+    function verificar(btn) {
+      const respuesta = btn.textContent;
+      const pregunta = preguntas[etapa];
+      let correcta = etapa === 2 || (respuesta === pregunta.correcta);
+
+      if (correcta) {
+        avanzar();
+      } else {
+        alert("Respuesta incorrecta 😅");
+      }
+    }
+
+    function avanzar() {
+      document.getElementById("pregunta-container").classList.add("oculto");
+
+      if (etapa === 1) {
+        document.getElementById("etapa1-video").setAttribute("visible", false);
+        document.getElementById("video1").pause();
+        document.getElementById("galeria").setAttribute("visible", true);
+        document.getElementById("btn-siguiente").classList.remove("oculto");
+        document.getElementById("texto-maquina").style.display = "none";
+        lanzarParticulas("💖");
+        etapa = 2;
+
+      } else if (etapa === 2) {
+        document.getElementById("galeria").setAttribute("visible", false);
+        document.getElementById("final-img").setAttribute("visible", true);
+        document.getElementById("pregunta-final").classList.remove("oculto");
+        lanzarParticulas("🌸");
+        etapa = 3;
+      }
+    }
+
+    function responderFinal(respuesta) {
+      document.getElementById("pregunta-final").classList.add("oculto");
+      if (respuesta === "no ya se me pasó") {
+        lanzarParticulas("🎆", 50);
+        alert("aló? rosa.. dame un betito❤️");
+      } else {
+        lanzarParticulas("💔", 30);
+        alert("ILoveYou️ ❤️");
+      }
+    }
+
+    function lanzarParticulas(emoji, cantidad = 20) {
+      for (let i = 0; i < cantidad; i++) {
+        const el = document.createElement("div");
+        el.className = "particle";
+        el.textContent = emoji;
+        el.style.left = Math.random() * 100 + "vw";
+        el.style.top = "100vh";
+        el.style.fontSize = (Math.random() * 16 + 20) + "px";
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 4000);
+      }
+    }
+  </script>
+</body>
+</html>
